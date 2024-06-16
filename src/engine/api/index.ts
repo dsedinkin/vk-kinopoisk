@@ -30,7 +30,8 @@ const request: TRequest = ({ path }) =>
   });
 
 const api = {
-  search: (params: string) => request({ path: `movie?${params}` })
-};
+  search: (params: string) => request({ path: `movie?${params}` }),
+  getById: (id: string) => request({ path: `movie/${id}` }),
+}
 
 export default api;
