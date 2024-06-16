@@ -12,12 +12,9 @@ const CustomFixedLayout: React.FC<ICustomFixedLayout> = ({
   ...restProps
 }) => {
   return (
-    <div
-      {...restProps}
-      className={classNames("CustomFixedLayout", className)}
-    >
+    <div className={classNames("CustomFixedLayout", className)}>
       <Separator wide />
-      <div className="CustomFixedLayout__content">
+      <div {...restProps} className="CustomFixedLayout__content">
         {children}
       </div>
     </div>
