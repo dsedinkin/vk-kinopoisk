@@ -3,6 +3,10 @@
   padding: 0 12px;
 }
 
-.WatchHeader__after .CustomCell__subhead {
-  padding: 12px;
+.WatchHeader__after .CustomCell__subhead  {
+  padding: 12px 12px 6px 12px;
+}
+
+.WatchHeader__after .CustomCell__headline  {
+  padding: 0 12px 12px 12px;
 }
