@@ -66,6 +66,13 @@ const Content: React.FC<IContentProps> = ({
     const params = new URLSearchParams([
       ["page", selectedFilters?.page],
       ["limit", "50"],
+      ...(selectedFilters?.selectedGenres?.length === 0 &&
+      !selectedFilters?.selectedRatingMin &&
+      !selectedFilters?.selectedRatingMax &&
+      !selectedFilters?.selectedYearMin &&
+      !selectedFilters?.selectedYearMax
+        ? [["lists", "top250"]]
+        : []),
       // ["notNullFields", "id"],
       // ["notNullFields", "name"],
       // ["notNullFields", "alternativeName"],
