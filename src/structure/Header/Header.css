@@ -1,0 +1,25 @@
+.Header {
+  align-items: center;
+  background: var(--vkui--color_background_content);
+  border-bottom: 0.5px solid var(--vkui--color_separator_secondary);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  height: 60px;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 1;
+}
+
+.Header__content {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 0 16px;
+  max-width: 1180px;
+  width: 100%;
+}

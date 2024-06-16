@@ -1,0 +1,9 @@
+.CustomCell.SimpleCell {
+  border-radius: 8px;
+  border: 0.5px solid transparent;
+}
+
+.CustomCell.SimpleCell.activated {
+  background: var(--vkui--color_background_content);
+  border: 0.5px solid var(--vkui--color_separator_secondary);
+}

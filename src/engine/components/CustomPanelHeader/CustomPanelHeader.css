@@ -1,0 +1,12 @@
+.CustomPanelHeader--second,
+.CustomPanelHeader--third {
+  background: var(--vkui--color_background_content);
+  padding: 10px 16px 0px 16px;
+}
+
+.CustomPanelHeader--second {
+}
+
+.CustomPanelHeader--third {
+  padding: 24px 24px 6px 28px;
+}

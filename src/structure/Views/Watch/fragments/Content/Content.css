@@ -1,0 +1,8 @@
+.WatchHeader {
+  display: flex;
+  padding: 0 12px;
+}
+
+.WatchHeader__after .CustomCell__subhead {
+  padding: 12px;
+}

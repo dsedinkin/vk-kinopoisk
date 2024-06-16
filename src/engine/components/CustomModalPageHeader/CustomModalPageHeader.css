@@ -1,0 +1,11 @@
+.CustomModalPageHeader {
+  padding-bottom: 12px;
+}
+
+.CustomModalPageHeader > div {
+  padding-inline: 0px !important;
+}
+
+.CustomModalPageHeader__content {
+  padding: 8px 0;
+}

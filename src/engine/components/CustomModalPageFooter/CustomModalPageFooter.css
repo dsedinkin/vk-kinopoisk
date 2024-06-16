@@ -1,0 +1,11 @@
+.CustomModalPageFooter__add {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+}
+
+.CustomModalPageFooter__edit {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

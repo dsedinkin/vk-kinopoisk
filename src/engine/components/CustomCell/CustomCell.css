@@ -1,0 +1,55 @@
+.CustomCell {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: var(--vkui--size_base_padding_horizontal--regular);
+}
+
+.CustomCell__before {
+  padding-inline-end: 12px;
+  color: var(--vkui_internal--icon_color, var(--vkui--color_icon_accent));
+}
+
+.CustomCell__middle {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-block: 10px;
+  max-inline-size: 100%;
+  flex-grow: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+}
+
+.CustomCell__middle > *:not(:first-child) {
+  margin-block-start: 2px;
+}
+
+.CustomCell__subhead {
+  font-size: 18px;
+  color: var(--vkui--color_text_primary);
+}
+
+.CustomCell__headline {
+  font-size: 15px;
+  color: var(--vkui--color_text_secondary);
+}
+
+.CustomCell__footnote {
+  font-size: 15px;
+  color: var(--vkui--color_text_secondary);
+}
+
+.CustomCell__text {
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.CustomCell__content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  flex-direction: row;
+}

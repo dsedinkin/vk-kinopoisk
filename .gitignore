@@ -1,0 +1,6 @@
+builds
+.DS_Store
+*.zip
+node_modules
+yarn.lock
+package-lock.json

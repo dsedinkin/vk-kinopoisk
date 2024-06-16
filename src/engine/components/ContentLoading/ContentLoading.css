@@ -1,0 +1,7 @@
+.ContentLoading {
+  background: var(--vkui--color_background_content);
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+  justify-content: flex-start;
+}

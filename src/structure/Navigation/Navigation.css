@@ -1,0 +1,18 @@
+.Navigation {
+  background: var(--vkui--color_background_tertiary);
+  overflow-y: auto;
+  padding: 24px;
+  width: 100%;
+}
+
+.Navigation::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  appearance: none;
+}
+
+.Navigation::-webkit-scrollbar-track,
+.Navigation::-webkit-scrollbar-thumb {
+  background: transparent;
+}

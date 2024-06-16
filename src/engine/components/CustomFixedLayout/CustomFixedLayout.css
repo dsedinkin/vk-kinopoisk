@@ -1,0 +1,10 @@
+.CustomFixedLayout {
+  background: var(--vkui--color_background_content);
+  bottom: 0;
+  position: -webkit-sticky;
+  position: sticky;
+}
+
+.CustomFixedLayout__content {
+  padding: 16px 32px;
+}

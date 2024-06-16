@@ -1,0 +1,17 @@
+.Auth__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1;
+  align-items: center;
+}
+
+.Auth__content .Placeholder {
+  flex: none;
+  border-radius: 13px;
+  padding-block: 3em;
+  background: var(--vkui--color_background_content);
+}
+.Auth__content .Placeholder .Footer {
+  max-width: 360px;
+}
