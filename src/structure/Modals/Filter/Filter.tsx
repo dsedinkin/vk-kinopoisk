@@ -200,13 +200,14 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
   };
 
   const handleDone = () => {
-    setSelectedFilters({
+    setSelectedFilters((prev) => ({
+      ...prev,
       selectedGenres,
       selectedRatingMin,
       selectedRatingMax,
       selectedYearMin,
       selectedYearMax,
-    });
+    }));
     routeNavigator.hideModal();
   };
 
