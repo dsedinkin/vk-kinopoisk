@@ -1,3 +1,3 @@
-const isDesktop = () => window.screen.width > 770;
+const isDesktop = () => true; // window.screen.width > 770;
 
 export default isDesktop;
