@@ -11,7 +11,7 @@ import {
   usePlatform,
 } from "@vkontakte/vkui";
 
-import { Icon24ArrowLeftOutline } from "@vkontakte/icons";
+import { Icon20ChevronLeftOutline } from "@vkontakte/icons";
 
 import "./CustomPanelHeader.css";
 
@@ -64,7 +64,8 @@ const CustomPanelHeader: React.FC<ICustomPanelHeader> = ({
         return (
           <div className={classNames("CustomPanelHeader--third", className)}>
             <Button
-              before={<Icon24ArrowLeftOutline />}
+              before={<Icon20ChevronLeftOutline />}
+              appearance="neutral"
               mode="secondary"
               size="l"
               onClick={onClick}
