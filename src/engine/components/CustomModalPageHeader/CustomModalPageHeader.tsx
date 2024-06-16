@@ -1,6 +1,6 @@
 import { classNames } from "engine/utils";
 
-import { ModalPageHeader, PanelHeaderContent, Title } from "@vkontakte/vkui";
+import { ModalPageHeader, PanelHeaderContent } from "@vkontakte/vkui";
 
 import "./CustomModalPageHeader.css";
 
@@ -20,12 +20,8 @@ const CustomModalPageHeader: React.FC<ICustomModalPageHeader> = ({
       {...restProps}
       className={classNames("CustomModalPageHeader", className)}
     >
-      <ModalPageHeader className="CustomModalPageHeader__content">
-        <PanelHeaderContent status={subtitle}>
-          <Title className="CustomModalPageHeader__title" level="3">
-            {title}
-          </Title>
-        </PanelHeaderContent>
+      <ModalPageHeader>
+        <PanelHeaderContent status={subtitle}>{title}</PanelHeaderContent>
       </ModalPageHeader>
     </div>
   );
