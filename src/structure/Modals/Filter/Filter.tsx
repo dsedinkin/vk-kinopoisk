@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
 import { classNames } from "engine/utils";
 
@@ -175,41 +175,20 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
   const [selectedFilters, setSelectedFilters] =
     useGlobalState(SELECTED_FILTERS);
 
-  const setState = ({ value, name }: any) =>
-    setSelectedFilters((prev) => ({ ...prev, [name]: value }));
-
-  const [selectedGenres, setSelectedGenres] = [
-    useMemo(() => selectedFilters?.selectedGenres, [selectedFilters]),
-    (value: Array<any>) => setState({ value, name: "selectedGenres" }),
-  ];
-  const [selectedRatingMin, setSelectedRatingMin] = [
-    useMemo(() => selectedFilters?.selectedRatingMin, [selectedFilters]),
-    (value: string) => setState({ value, name: "selectedRatingMin" }),
-  ];
-  const [selectedRatingMax, setSelectedRatingMax] = [
-    useMemo(() => selectedFilters?.selectedRatingMax, [selectedFilters]),
-    (value: string) => setState({ value, name: "selectedRatingMax" }),
-  ];
-  const [selectedYearMin, setSelectedYearMin] = [
-    useMemo(() => selectedFilters?.selectedYearMin, [selectedFilters]),
-    (value: string) => setState({ value, name: "selectedYearMin" }),
-  ];
-  const [selectedYearMax, setSelectedYearMax] = [
-    useMemo(() => selectedFilters?.selectedYearMax, [selectedFilters]),
-    (value: string) => setState({ value, name: "selectedYearMax" }),
-  ];
-
-  const inputGenres = useMemo(
-    () => (
-      <ChipsSelect
-        id="genres"
-        value={selectedGenres}
-        onChange={setSelectedGenres}
-        options={genres}
-        placeholder="Не выбраны"
-      />
-    ),
-    [selectedGenres, genres]
+  const [selectedGenres, setSelectedGenres] = useState(
+    selectedFilters?.selectedGenres || []
+  );
+  const [selectedRatingMin, setSelectedRatingMin] = useState(
+    selectedFilters?.selectedRatingMin || ""
+  );
+  const [selectedRatingMax, setSelectedRatingMax] = useState(
+    selectedFilters?.selectedRatingMax || ""
+  );
+  const [selectedYearMin, setSelectedYearMin] = useState(
+    selectedFilters?.selectedYearMin || ""
+  );
+  const [selectedYearMax, setSelectedYearMax] = useState(
+    selectedFilters?.selectedYearMax || ""
   );
 
   const handleReset = () => {
@@ -221,6 +200,13 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
   };
 
   const handleDone = () => {
+    setSelectedFilters({
+      selectedGenres,
+      selectedRatingMin,
+      selectedRatingMax,
+      selectedYearMin,
+      selectedYearMax,
+    });
     routeNavigator.hideModal();
   };
 
@@ -244,7 +230,13 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
     <div {...restProps} className={classNames("Filter", className)}>
       <CustomModalPageHeader title="Фильтры" />
       <FormItem htmlFor="genres" top="Выберите жанры">
-        {inputGenres}
+        <ChipsSelect
+          id="genres"
+          value={selectedGenres}
+          onChange={setSelectedGenres}
+          options={genres}
+          placeholder="Не выбраны"
+        />
       </FormItem>
       <FormLayoutGroup mode="horizontal">
         <FormItem top="Рейтинг">
@@ -291,9 +283,7 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
         >
           Сбросить
         </Button>
-        <Button onClick={handleDone} disabled={disabled}>
-          Применить
-        </Button>
+        <Button onClick={handleDone}>Применить</Button>
       </CustomModalPageFooter>
     </div>
   );
