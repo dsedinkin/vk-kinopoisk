@@ -6,6 +6,15 @@
   padding-inline: var(--vkui--size_base_padding_horizontal--regular);
 }
 
+.CustomCell__content {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  flex-direction: row;
+  margin: 12px 0;
+}
+
 .CustomCell__before {
   padding-inline-end: 12px;
   color: var(--vkui_internal--icon_color, var(--vkui--color_icon_accent));
@@ -44,12 +53,4 @@
 .CustomCell__text {
   text-overflow: ellipsis;
   overflow: hidden;
-}
-
-.CustomCell__content {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  flex-direction: row;
 }

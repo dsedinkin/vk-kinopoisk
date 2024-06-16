@@ -24,6 +24,7 @@ interface CustomCellProps extends React.HTMLAttributes<HTMLDivElement> {
     ref: React.Ref<HTMLElement> | undefined;
   }) => void;
   rating?: string;
+  src?: string;
   subhead: string;
 }
 
@@ -34,13 +35,12 @@ const CustomCell: React.FC<CustomCellProps> = ({
   headline,
   onClickIconButtonAfter,
   rating,
+  src,
   subhead,
   children,
   className,
   ...restProps
 }) => {
-  const src =
-    "https://image.openmoviedb.com/kinopoisk-images/1946459/bf93b465-1189-4155-9dd1-cb9fb5cb1bb5/orig";
   return (
     <div className={classNames("CustomCell", className)}>
       <Tappable {...restProps} className="CustomCell__content">
