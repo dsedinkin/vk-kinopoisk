@@ -97,8 +97,10 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
             </Div>
           </div>
         </div>
-        <Header mode="secondary">Описание</Header>
         <Div>
+          <Header mode="secondary" style={{ padding: 0 }}>
+            Описание
+          </Header>
           <Text>{description}</Text>
         </Div>
       </div>
