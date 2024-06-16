@@ -6,3 +6,4 @@ export { default as CustomModalPageHeader } from "./CustomModalPageHeader/Custom
 export { default as CustomPanelHeader } from "./CustomPanelHeader/CustomPanelHeader";
 export { default as CustomSnackbar } from "./CustomSnackbar/CustomSnackbar";
 export { default as Poster } from "./Poster/Poster";
+export { default as SelectYear } from "./SelectYear/SelectYear";
