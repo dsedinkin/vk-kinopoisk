@@ -1,5 +1,1 @@
-export type TRequest = ({
-
-}: {
-
-  }) => Promise<any>;
+export type TRequest = (params: { path: string }) => Promise<any>;
