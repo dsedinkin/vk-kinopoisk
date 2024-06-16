@@ -1,7 +1,10 @@
+import { useRef } from "react";
 import {
   useRouteNavigator,
   useActiveVkuiLocation,
 } from "@vkontakte/vk-mini-apps-router";
+import { scrollToRef } from "engine/utils";
+
 import { useGlobalValue } from "elum-state/react";
 import { SNACKBAR, POPOUT, DEFAULT_VIEW, DEFAULT_PANELS } from "engine/state";
 
@@ -53,6 +56,12 @@ const App: React.FC<App> = () => {
 
   const header = (!isPrivateView || modeSplitColMiddle) && <Header />;
 
+  const contentRef = useRef<React.Ref<HTMLDivElement>>();
+
+  const scrollTop = () => {
+    scrollToRef(contentRef);
+  };
+
   return (
     <SplitLayout
       popout={popout}
@@ -80,6 +89,7 @@ const App: React.FC<App> = () => {
         }
         animate={false}
         maxWidth={modeSplitColMiddle ? 1232 : 930}
+        getRootRef={contentRef as any}
       >
         <Root activeView={activeView}>
           <View
@@ -92,7 +102,10 @@ const App: React.FC<App> = () => {
             nav={DEFAULT_VIEW.search}
             activePanel={DEFAULT_PANELS.search.DEFAULT_PANEL}
           >
-            <Search nav={DEFAULT_PANELS.search.DEFAULT_PANEL} />
+            <Search
+              nav={DEFAULT_PANELS.search.DEFAULT_PANEL}
+              scrollTop={scrollTop}
+            />
           </View>
           <View
             nav={DEFAULT_VIEW.favorite}
