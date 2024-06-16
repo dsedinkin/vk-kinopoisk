@@ -9,3 +9,14 @@ export const POPOUT = atom<JSX.Element>({
   key: "popout",
   default: undefined,
 });
+
+export const SELECTED_FILTERS = atom<Record<string, any>>({
+  key: "selectedFilters",
+  default: {
+    selectedGenres: "",
+    selectedRatingMin: "",
+    selectedRatingMax: "",
+    selectedYearMin: "",
+    selectedYearMax: ""
+  }
+});
