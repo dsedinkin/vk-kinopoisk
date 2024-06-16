@@ -1,26 +1,28 @@
-import { useRef, createRef, useMemo } from "react";
+import { useRef, createRef, useEffect, useMemo, useState } from "react";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
-import { classNames } from "engine/utils";
+import api from "engine/api";
+import { classNames, parseResponseKinopoiskDocs } from "engine/utils";
 
 import { useGlobalState } from "elum-state/react";
-import { POPOUT } from "engine/state";
+import { POPOUT, SELECTED_FILTERS } from "engine/state";
 
 import {
   ActionSheet,
   ActionSheetItem,
   AdaptiveIconRenderer,
-  Input,
-  IconButton,
-  FormItem,
+  Div,
   usePlatform,
   Platform,
+  Button,
+  Pagination,
 } from "@vkontakte/vkui";
-import { CustomCell } from "engine/components";
+import {
+  ContentLoading,
+  CustomCell,
+  CustomFixedLayout,
+} from "engine/components";
 
 import {
-  Icon16Search,
-  Icon24Done,
-  Icon24Cancel,
   Icon24Filter,
   Icon20DeleteOutline,
   Icon20DeleteOutlineAndroid,
@@ -34,58 +36,102 @@ import {
 
 import "./Content.css";
 
-interface IContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface IContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  scrollTop: () => void;
+}
 
-const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
+const Content: React.FC<IContentProps> = ({
+  scrollTop,
+  className,
+  ...restProps
+}) => {
   const platform = usePlatform();
 
   const routeNavigator = useRouteNavigator();
 
   const [popout, setPopout] = useGlobalState(POPOUT);
-
-  const handleDone = () => {};
-
-  const handleClear = () => {};
+  const [response, setResponse] = useState<any>({});
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [selectedFilters, setSelectedFilters] =
+    useGlobalState(SELECTED_FILTERS);
 
   const handleFilter = () => {
     routeNavigator.showModal("filter");
   };
 
-  const array = [
-    {
-      id: 535341,
-      name: "1+1",
-      alternativeName: "Intouchables",
-      poster: {
-        url: "https://image.openmoviedb.com/kinopoisk-images/1946459/bf93b465-1189-4155-9dd1-cb9fb5cb1bb5/orig",
-        previewUrl:
-          "https://image.openmoviedb.com/kinopoisk-images/1946459/bf93b465-1189-4155-9dd1-cb9fb5cb1bb5/x1000",
-      },
-      rating: {
-        kp: 8.826,
-        imdb: 8.5,
-        filmCritics: 6.8,
-        russianFilmCritics: 100,
-        await: null,
-      },
-      shortDescription:
-        "Аристократ на коляске нанимает в сиделки бывшего заключенного. Искрометная французская комедия с Омаром Си",
-      genres: [
-        {
-          name: "драма",
-        },
-        {
-          name: "комедия",
-        },
-      ],
-      countries: [
-        {
-          name: "Франция",
-        },
-      ],
-      year: 2011,
-    },
-  ];
+  const handleRefresh = () => {
+    setError(false);
+    setLoading(true);
+    const params = new URLSearchParams([
+      ["page", selectedFilters?.page],
+      ["limit", "50"],
+      // ["notNullFields", "id"],
+      // ["notNullFields", "name"],
+      // ["notNullFields", "alternativeName"],
+      // ["notNullFields", "year"],
+      // ["notNullFields", "rating.kp"],
+      // ["notNullFields", "poster.url"],
+      ...(selectedFilters?.selectedGenres
+        ? selectedFilters?.selectedGenres?.map((value: any) => [
+            "genres.name",
+            value?.label,
+          ])
+        : []),
+      ...(selectedFilters?.selectedRatingMin ||
+      selectedFilters?.selectedRatingMax
+        ? [
+            [
+              "rating.kp",
+              `${
+                selectedFilters?.selectedRatingMin
+                  ? selectedFilters?.selectedRatingMin
+                  : "0"
+              }${
+                "-" +
+                (selectedFilters?.selectedRatingMax
+                  ? selectedFilters?.selectedRatingMax
+                  : "10")
+              }`,
+            ],
+          ]
+        : []),
+      ...(selectedFilters?.selectedYearMin || selectedFilters?.selectedYearMax
+        ? [
+            [
+              "year",
+              `${
+                selectedFilters?.selectedYearMin
+                  ? selectedFilters?.selectedYearMin
+                  : "1990"
+              }${
+                "-" +
+                (selectedFilters?.selectedYearMax
+                  ? selectedFilters?.selectedYearMax
+                  : new Date().getFullYear())
+              }`,
+            ],
+          ]
+        : []),
+    ]).toString();
+    api
+      .search(params)
+      .then((resp) => {
+        setResponse(resp || {});
+      })
+      .catch((error) => {
+        console.log({ error });
+        setError(true);
+      })
+      .finally(() => {
+        setLoading(false);
+        scrollTop();
+      });
+  };
+
+  useEffect(() => {
+    handleRefresh();
+  }, [selectedFilters]);
 
   const onClickIconButtonAfter = ({
     ref,
@@ -147,66 +193,72 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
 
   const list = useMemo(
     () =>
-      array?.map((value, key) => {
-        const id = value?.id || 0;
-        const subhead = value?.name;
-        const headline =
-          value?.alternativeName + (value?.year ? ", " + value?.year : "");
-        const footnote =
-          (value?.countries
-            ? value?.countries?.map((value) => value?.name)?.join(", ")
-            : "") +
-          (value?.genres
-            ? (value?.countries ? " · " : "") +
-              value?.genres?.map((value) => value?.name)?.join(", ")
-            : "");
-        const rating = value?.rating?.kp.toFixed(1);
+      Array.isArray(response?.docs) ? (
+        (response?.docs as Array<any>)?.map((value, key) => {
+          const {
+            id,
+            name,
+            alternativeNamePlusYear,
+            countriesPlusGenres,
+            rating,
+            src,
+          } = parseResponseKinopoiskDocs(value);
 
-        refs.current[key] = refs?.current?.[key] || createRef();
+          refs.current[key] = refs?.current?.[key] || createRef();
 
-        return (
-          <CustomCell
-            key={`CustomCell--${key}`}
-            favorite={true}
-            footnote={footnote}
-            headline={headline}
-            onClick={() => routeNavigator.push(`/watch/${id}`)}
-            getIconButtonAfterRef={refs.current[key]}
-            onClickIconButtonAfter={({ ref }) => {
-              onClickIconButtonAfter({ ref });
-            }}
-            rating={rating}
-            subhead={subhead}
-          />
-        );
-      }),
-    [array]
+          return (
+            <CustomCell
+              key={`CustomCell--${key}`}
+              favorite={true}
+              footnote={countriesPlusGenres}
+              headline={alternativeNamePlusYear}
+              onClick={() => routeNavigator.push(`/watch/${id}`)}
+              getIconButtonAfterRef={refs.current[key]}
+              onClickIconButtonAfter={({ ref }) => {
+                onClickIconButtonAfter({ ref });
+              }}
+              rating={rating}
+              src={src}
+              subhead={name}
+            />
+          );
+        })
+      ) : (
+        <></>
+      ),
+    [response]
   );
 
   return (
     <div {...restProps} className={classNames("Content Group", className)}>
-      <div className="Group__content">
-        <FormItem style={{ paddingTop: 0 }}>
-          <Input
-            after={
-              <>
-                <IconButton onClick={handleDone}>
-                  <Icon24Done />
-                </IconButton>
-                <IconButton onClick={handleClear}>
-                  <Icon24Cancel />
-                </IconButton>
-                <IconButton onClick={handleFilter}>
-                  <Icon24Filter />
-                </IconButton>
-              </>
-            }
-            before={<Icon16Search color="var(--vkui--color_icon_secondary)" />}
-            placeholder="Название фильма, сериала..."
+      <ContentLoading loading={loading} error={error} onRefresh={handleRefresh}>
+        <div className="Group__content">
+          <Div style={{ paddingTop: 0 }}>
+            <Button
+              appearance="neutral"
+              before={<Icon24Filter />}
+              onClick={handleFilter}
+              size="l"
+              stretched={true}
+            >
+              Фильтры
+            </Button>
+          </Div>
+          {list}
+        </div>
+        <CustomFixedLayout
+          style={{ display: "flex", justifyContent: "center" }}
+        >
+          <Pagination
+            currentPage={selectedFilters?.page}
+            totalPages={response?.pages}
+            onChange={(page) => {
+              scrollTop();
+              setSelectedFilters((prev) => ({ ...prev, page: page }));
+            }}
           />
-        </FormItem>
-        {list}
-      </div>
+        </CustomFixedLayout>
+      </ContentLoading>
     </div>
   );
 };
