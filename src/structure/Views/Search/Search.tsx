@@ -11,10 +11,12 @@ import "./Search.css";
 
 interface ISearchProps extends React.HTMLAttributes<HTMLDivElement> {
   nav: string;
+  scrollTop: () => void;
 }
 
 const Search: React.FC<ISearchProps> = ({
   nav,
+  scrollTop,
   className,
   ...restProps
 }) => {
@@ -30,7 +32,7 @@ const Search: React.FC<ISearchProps> = ({
       nav={nav}
     >
       <Header children="Поиск" onClick={handleBackPage} />
-      <Content />
+      <Content scrollTop={scrollTop} />
     </Panel>
   );
 };
