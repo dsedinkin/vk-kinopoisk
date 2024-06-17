@@ -1,5 +1,11 @@
 import { useRef, createRef, useEffect, useMemo, useState } from "react";
 import { useRouteNavigator } from "@vkontakte/vk-mini-apps-router";
+import {
+  copyText,
+  getFavorites,
+  isFavorites,
+  setFavorites,
+} from "engine/action";
 import api from "engine/api";
 import { classNames, parseResponseKinopoiskDocs } from "engine/utils";
 
@@ -53,6 +59,7 @@ const Content: React.FC<IContentProps> = ({
   const [response, setResponse] = useState<any>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const favorites = getFavorites();
   const [selectedFilters, setSelectedFilters] =
     useGlobalState(SELECTED_FILTERS);
 
@@ -141,8 +148,10 @@ const Content: React.FC<IContentProps> = ({
   }, [selectedFilters]);
 
   const onClickIconButtonAfter = ({
+    id,
     ref,
   }: {
+    id: string;
     ref: React.Ref<HTMLElement> | undefined;
   }) => {
     setPopout(
@@ -157,41 +166,50 @@ const Content: React.FC<IContentProps> = ({
               IconRegular={Icon28CopyOutline}
             />
           }
-          onClick={() => {}}
+          onClick={() => {
+            copyText(`${window.location.origin}/#/watch/${id}`);
+          }}
         >
           Скопировать ссылку
         </ActionSheetItem>
-        <ActionSheetItem
-          before={
-            <AdaptiveIconRenderer
-              IconCompact={Icon20FavoriteOutline}
-              IconRegular={Icon28FavoriteOutline}
-            />
-          }
-          onClick={() => {}}
-        >
-          В избранное
-        </ActionSheetItem>
-        <ActionSheetItem
-          before={
-            <AdaptiveIconRenderer
-              IconCompact={
-                platform === Platform.IOS
-                  ? Icon20DeleteOutline
-                  : Icon20DeleteOutlineAndroid
-              }
-              IconRegular={
-                platform === Platform.IOS
-                  ? Icon28DeleteOutline
-                  : Icon28DeleteOutlineAndroid
-              }
-            />
-          }
-          mode="destructive"
-          onClick={() => {}}
-        >
-          Удалить из избранного
-        </ActionSheetItem>
+        {isFavorites(id) ? (
+          <ActionSheetItem
+            before={
+              <AdaptiveIconRenderer
+                IconCompact={
+                  platform === Platform.IOS
+                    ? Icon20DeleteOutline
+                    : Icon20DeleteOutlineAndroid
+                }
+                IconRegular={
+                  platform === Platform.IOS
+                    ? Icon28DeleteOutline
+                    : Icon28DeleteOutlineAndroid
+                }
+              />
+            }
+            mode="destructive"
+            onClick={() => {
+              setFavorites(id);
+            }}
+          >
+            Удалить из избранного
+          </ActionSheetItem>
+        ) : (
+          <ActionSheetItem
+            before={
+              <AdaptiveIconRenderer
+                IconCompact={Icon20FavoriteOutline}
+                IconRegular={Icon28FavoriteOutline}
+              />
+            }
+            onClick={() => {
+              setFavorites(id);
+            }}
+          >
+            В избранное
+          </ActionSheetItem>
+        )}
       </ActionSheet>
     );
   };
@@ -216,13 +234,13 @@ const Content: React.FC<IContentProps> = ({
           return (
             <CustomCell
               key={`CustomCell--${key}`}
-              favorite={true}
+              favorite={isFavorites(id)}
               footnote={countriesPlusGenres}
               headline={alternativeNamePlusYear}
               onClick={() => routeNavigator.push(`/watch/${id}`)}
               getIconButtonAfterRef={refs.current[key]}
               onClickIconButtonAfter={({ ref }) => {
-                onClickIconButtonAfter({ ref });
+                onClickIconButtonAfter({ id, ref });
               }}
               rating={rating}
               src={src}
@@ -233,7 +251,7 @@ const Content: React.FC<IContentProps> = ({
       ) : (
         <></>
       ),
-    [response]
+    [favorites, response]
   );
 
   return (

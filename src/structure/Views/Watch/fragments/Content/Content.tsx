@@ -1,5 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouteNavigator, useParams } from "@vkontakte/vk-mini-apps-router";
+import {
+  getFavorites,
+  isFavorites,
+  setFavorites,
+  copyText,
+} from "engine/action";
 import api from "engine/api";
 import { classNames, parseResponseKinopoiskDocs } from "engine/utils";
 
@@ -35,6 +41,8 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
+  const favorites = getFavorites();
+
   const handleRefresh = () => {
     setError(false);
     setLoading(true);
@@ -57,6 +65,35 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
     }
   };
 
+  const id = useMemo(() => response?.id, [response]);
+
+  const buttons = useMemo(
+    () =>
+      isFavorites(id) ? (
+        <Button
+          appearance="negative"
+          mode="primary"
+          size="l"
+          onClick={() => {
+            setFavorites(id);
+          }}
+        >
+          Удалить из избранного
+        </Button>
+      ) : (
+        <Button
+          mode="primary"
+          size="l"
+          onClick={() => {
+            setFavorites(id);
+          }}
+        >
+          В избранное
+        </Button>
+      ),
+    [id, favorites]
+  );
+
   useEffect(() => {
     handleRefresh();
   }, []);
@@ -68,7 +105,7 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
           <div className="WatchHeader">
             <div className="WatchHeader__before">
               <Poster
-                favorite={true}
+                favorite={isFavorites(response?.id)}
                 rating={response?.rating}
                 src={response?.src}
               />
@@ -131,10 +168,16 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
               )}
               <Div>
                 <ButtonGroup mode="horizontal" stretched>
-                  <Button mode="primary" size="l">
-                    В избранное
-                  </Button>
-                  <Button mode="secondary" size="l">
+                  {buttons}
+                  <Button
+                    mode="secondary"
+                    size="l"
+                    onClick={() => {
+                      copyText(
+                        `${window.location.origin}/#/watch/${id}`
+                      );
+                    }}
+                  >
                     Скопировать ссылку
                   </Button>
                 </ButtonGroup>
