@@ -5,7 +5,8 @@ import {
 import { classNames } from "engine/utils";
 
 import { Panel } from "@vkontakte/vkui";
-import { Header, Content } from "./fragments";
+import { CustomPanelHeader as Header } from "engine/components";
+import { SearchContent as Content } from "engine/fragments";
 
 import "./Search.css";
 
@@ -32,7 +33,7 @@ const Search: React.FC<ISearchProps> = ({
       nav={nav}
     >
       <Header children="Поиск" onClick={handleBackPage} />
-      <Content scrollTop={scrollTop} />
+      <Content mode="search" scrollTop={scrollTop} />
     </Panel>
   );
 };

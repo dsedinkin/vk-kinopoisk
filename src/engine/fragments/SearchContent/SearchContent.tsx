@@ -21,6 +21,7 @@ import {
   Platform,
   Button,
   Pagination,
+  Placeholder,
 } from "@vkontakte/vkui";
 import {
   ContentLoading,
@@ -38,15 +39,18 @@ import {
   Icon28CopyOutline,
   Icon20FavoriteOutline,
   Icon28FavoriteOutline,
+  Icon56FavoriteOutline,
 } from "@vkontakte/icons";
 
-import "./Content.css";
+import "./SearchContent.css";
 
-interface IContentProps extends React.HTMLAttributes<HTMLDivElement> {
+interface ISearchContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  mode?: "search" | "favorites";
   scrollTop: () => void;
 }
 
-const Content: React.FC<IContentProps> = ({
+const SearchContent: React.FC<ISearchContentProps> = ({
+  mode = "search",
   scrollTop,
   className,
   ...restProps
@@ -73,6 +77,9 @@ const Content: React.FC<IContentProps> = ({
     const params = new URLSearchParams([
       ["page", selectedFilters?.page],
       ["limit", "50"],
+      ...(mode === "favorites" && favorites?.length > 0
+        ? favorites.map((value) => ["id", value])
+        : []),
       ...(selectedFilters?.selectedGenres?.length === 0 &&
       !selectedFilters?.selectedRatingMin &&
       !selectedFilters?.selectedRatingMax &&
@@ -256,36 +263,52 @@ const Content: React.FC<IContentProps> = ({
 
   return (
     <div {...restProps} className={classNames("Content Group", className)}>
-      <ContentLoading loading={loading} error={error} onRefresh={handleRefresh}>
+      {mode === "favorites" && favorites?.length === 0 ? (
         <div className="Group__content">
-          <Div style={{ paddingTop: 0 }}>
-            <Button
-              appearance="neutral"
-              before={<Icon24Filter />}
-              onClick={handleFilter}
-              size="l"
-              stretched={true}
-            >
-              Фильтры
-            </Button>
-          </Div>
-          {list}
-        </div>
-        <CustomFixedLayout
-          style={{ display: "flex", justifyContent: "center" }}
-        >
-          <Pagination
-            currentPage={selectedFilters?.page}
-            totalPages={response?.pages}
-            onChange={(page) => {
-              scrollTop();
-              setSelectedFilters((prev) => ({ ...prev, page: page }));
-            }}
+          <Placeholder
+            header="Пока не добавлено"
+            icon={
+              <Icon56FavoriteOutline color="var(--vkui--color_text_secondary)" />
+            }
+            stretched
           />
-        </CustomFixedLayout>
-      </ContentLoading>
+        </div>
+      ) : (
+        <ContentLoading
+          loading={loading}
+          error={error}
+          onRefresh={handleRefresh}
+        >
+          <div className="Group__content">
+            <Div style={{ paddingTop: 0 }}>
+              <Button
+                appearance="neutral"
+                before={<Icon24Filter />}
+                onClick={handleFilter}
+                size="l"
+                stretched={true}
+              >
+                Фильтры
+              </Button>
+            </Div>
+            {list}
+          </div>
+          <CustomFixedLayout
+            style={{ display: "flex", justifyContent: "center" }}
+          >
+            <Pagination
+              currentPage={selectedFilters?.page}
+              totalPages={response?.pages}
+              onChange={(page) => {
+                scrollTop();
+                setSelectedFilters((prev) => ({ ...prev, page: page }));
+              }}
+            />
+          </CustomFixedLayout>
+        </ContentLoading>
+      )}
     </div>
   );
 };
 
-export default Content;
+export default SearchContent;

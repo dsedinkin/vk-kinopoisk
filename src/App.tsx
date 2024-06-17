@@ -111,7 +111,10 @@ const App: React.FC<App> = () => {
             nav={DEFAULT_VIEW.favorite}
             activePanel={DEFAULT_PANELS.favorite.DEFAULT_PANEL}
           >
-            <Favorite nav={DEFAULT_PANELS.favorite.DEFAULT_PANEL} />
+            <Favorite
+              nav={DEFAULT_PANELS.favorite.DEFAULT_PANEL}
+              scrollTop={scrollTop}
+            />
           </View>
           <View
             nav={DEFAULT_VIEW.watch}

@@ -5,16 +5,19 @@ import {
 import { classNames } from "engine/utils";
 
 import { Panel } from "@vkontakte/vkui";
-import { Header, Content } from "./fragments";
+import { CustomPanelHeader as Header } from "engine/components";
+import { SearchContent as Content } from "engine/fragments";
 
 import "./Favorite.css";
 
 interface IFavoriteProps extends React.HTMLAttributes<HTMLDivElement> {
   nav: string;
+  scrollTop: () => void;
 }
 
 const Favorite: React.FC<IFavoriteProps> = ({
   nav,
+  scrollTop,
   className,
   ...restProps
 }) => {
@@ -30,7 +33,7 @@ const Favorite: React.FC<IFavoriteProps> = ({
       nav={nav}
     >
       <Header children="Избранное" onClick={handleBackPage} />
-      <Content />
+      <Content mode="favorites" scrollTop={scrollTop} />
     </Panel>
   );
 };

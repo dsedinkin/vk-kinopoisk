@@ -36,7 +36,11 @@ export const storage = {
   set: (key: string, value: string) => localStorage?.setItem(key, value),
 };
 
-export const getFavorites = () => storage.get("FAVORITES")?.split(",") || [];
+export const getFavorites = () =>
+  storage
+    .get("FAVORITES")
+    ?.split(",")
+    ?.filter((value) => value && value) || [];
 
 export const isFavorites = (id: string) => {
   const idString = String(id);
@@ -62,5 +66,8 @@ export const setFavorites = (id: string) => {
       text: "Добавлено в избранное",
     });
   }
-  storage.set("FAVORITES", prevState?.join(","));
+  storage.set(
+    "FAVORITES",
+    prevState?.filter((value) => value && value)?.join(",")
+  );
 };
