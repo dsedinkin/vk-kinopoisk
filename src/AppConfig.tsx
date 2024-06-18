@@ -1,10 +1,5 @@
 import vkBridge from "@vkontakte/vk-bridge";
 import {
-  useAppearance,
-  useInsets,
-  useAdaptivity,
-} from "@vkontakte/vk-bridge-react";
-import {
   createHashRouter,
   RoutesConfig,
   createRoot,
@@ -12,7 +7,6 @@ import {
   createPanel,
   RouterProvider,
 } from "@vkontakte/vk-mini-apps-router";
-import { transformVKBridgeAdaptivity } from "engine/utils";
 
 import { DEFAULT_VIEW, DEFAULT_PANELS } from "engine/state";
 
@@ -30,9 +24,6 @@ interface IAppConfig extends React.HTMLAttributes<HTMLDivElement> {}
 
 const AppConfig: React.FC<IAppConfig> = () => {
   const platform = usePlatform();
-  // const vkBridgeAppearance = useAppearance() || undefined;
-  // const vkBridgeInsets = useInsets() || undefined;
-  // const vkBridgeAdaptivityProps = transformVKBridgeAdaptivity(useAdaptivity());
 
   const routes = RoutesConfig.create([
     createRoot("default_root", [
@@ -56,12 +47,8 @@ const AppConfig: React.FC<IAppConfig> = () => {
 
   const router = createHashRouter(routes.getRoutes());
 
-  // <AdaptivityProvider {...vkBridgeAdaptivityProps}>
-  // <AppRoot mode="full" safeAreaInsets={vkBridgeInsets}>
   return (
     <ConfigProvider
-      // appearance="light"
-      // appearance={vkBridgeAppearance}
       platform={platform}
       isWebView={vkBridge.isWebView()}
       hasCustomPanelHeaderAfter={false}
@@ -77,6 +64,6 @@ const AppConfig: React.FC<IAppConfig> = () => {
       </AdaptivityProvider>
     </ConfigProvider>
   );
-}; // Examples
+};
 
 export default AppConfig;
