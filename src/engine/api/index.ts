@@ -1,14 +1,4 @@
-import { getter, setter } from "elum-state/react";
-import { } from "engine/state";
-
 import { TRequest } from "engine/types";
-
-import { } from "engine/action";
-
-const options = {
-  method: "GET",
-  headers: { accept: "application/json", "X-API-KEY": "" }
-};
 
 const state = new Map();
 
@@ -19,6 +9,11 @@ const request: TRequest = ({ path }) =>
     if (json) {
       resolve(json);
     } else {
+      const token = JSON?.parse(localStorage?.getItem("ACCESS_TOKEN") || "") || "";
+      const options = {
+        method: "GET",
+        headers: { accept: "application/json", "X-API-KEY": token }
+      };
       fetch(`https://api.kinopoisk.dev/v1.4/${path}`, options)
         .then((data) => data.json())
         .then((resp) => {
