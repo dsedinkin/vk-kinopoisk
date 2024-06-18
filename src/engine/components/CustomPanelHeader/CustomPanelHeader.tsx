@@ -17,11 +17,13 @@ import "./CustomPanelHeader.css";
 
 interface ICustomPanelHeader extends React.HTMLAttributes<HTMLDivElement> {
   defaultMode?: "first" | "second" | "third";
+  modeDesktop?: boolean;
   subtitle?: string;
 }
 
 const CustomPanelHeader: React.FC<ICustomPanelHeader> = ({
   defaultMode,
+  modeDesktop,
   onClick,
   subtitle,
   className,
@@ -29,12 +31,11 @@ const CustomPanelHeader: React.FC<ICustomPanelHeader> = ({
   ...restProps
 }) => {
   const platform = usePlatform();
-  const desktop = isDesktop();
   const [mode, setMode] = useState("second");
 
   useEffect(() => {
-    setMode(desktop ? (defaultMode ? defaultMode : "second") : "first");
-  }, [desktop]);
+    setMode(modeDesktop ? (defaultMode ? defaultMode : "second") : "first");
+  }, [modeDesktop]);
 
   const content = useMemo(() => {
     switch (mode) {

@@ -11,9 +11,15 @@ import "./Watch.css";
 
 interface IWatchProps extends React.HTMLAttributes<HTMLDivElement> {
   nav: string;
+  modeDesktop?: boolean;
 }
 
-const Watch: React.FC<IWatchProps> = ({ nav, className, ...restProps }) => {
+const Watch: React.FC<IWatchProps> = ({
+  nav,
+  modeDesktop,
+  className,
+  ...restProps
+}) => {
   const routeNavigator = useRouteNavigator();
   const isFirstPage = useFirstPageCheck();
   const handleBackPage = () =>
@@ -25,8 +31,13 @@ const Watch: React.FC<IWatchProps> = ({ nav, className, ...restProps }) => {
       id={nav}
       nav={nav}
     >
-      <Header children="Watch" onClick={handleBackPage} defaultMode="third" />
-      <Content />
+      <Header
+        children="Просмотр"
+        defaultMode="third"
+        modeDesktop={modeDesktop}
+        onClick={handleBackPage}
+      />
+      <Content modeDesktop={modeDesktop} />
     </Panel>
   );
 };

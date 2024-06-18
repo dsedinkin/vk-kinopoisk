@@ -17,17 +17,19 @@ import {
   CustomModalPageHeader,
   SelectYear,
 } from "engine/components";
-import { Loading } from "structure/Popouts";
-
-import {} from "@vkontakte/icons";
 
 import "./Filter.css";
 
-interface IFilter extends React.HTMLAttributes<HTMLDivElement> {}
+interface IFilter extends React.HTMLAttributes<HTMLDivElement> {
+  modeDesktop?: boolean;
+}
 
-const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
+const Filter: React.FC<IFilter> = ({
+  modeDesktop,
+  className,
+  ...restProps
+}) => {
   const routeNavigator = useRouteNavigator();
-  const path = `filter`;
 
   const genres = [
     {
@@ -229,7 +231,10 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
 
   return (
     <div {...restProps} className={classNames("Filter", className)}>
-      <CustomModalPageHeader title="Фильтры" />
+      <CustomModalPageHeader
+        title="Фильтры"
+        onClose={() => routeNavigator.hideModal()}
+      />
       <FormItem htmlFor="genres" top="Выберите жанры">
         <ChipsSelect
           id="genres"
@@ -281,10 +286,13 @@ const Filter: React.FC<IFilter> = ({ className, ...restProps }) => {
           disabled={disabled}
           mode="link"
           onClick={handleReset}
+          size={modeDesktop ? "m" : "l"}
         >
           Сбросить
         </Button>
-        <Button onClick={handleDone}>Применить</Button>
+        <Button onClick={handleDone} size={modeDesktop ? "m" : "l"}>
+          Применить
+        </Button>
       </CustomModalPageFooter>
     </div>
   );

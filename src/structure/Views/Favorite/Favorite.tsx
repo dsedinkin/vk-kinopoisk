@@ -12,11 +12,13 @@ import "./Favorite.css";
 
 interface IFavoriteProps extends React.HTMLAttributes<HTMLDivElement> {
   nav: string;
+  modeDesktop: boolean;
   scrollTop: () => void;
 }
 
 const Favorite: React.FC<IFavoriteProps> = ({
   nav,
+  modeDesktop,
   scrollTop,
   className,
   ...restProps
@@ -32,8 +34,12 @@ const Favorite: React.FC<IFavoriteProps> = ({
       id={nav}
       nav={nav}
     >
-      <Header children="Избранное" onClick={handleBackPage} />
-      <Content mode="favorites" scrollTop={scrollTop} />
+      <Header
+        children="Избранное"
+        onClick={handleBackPage}
+        modeDesktop={modeDesktop}
+      />
+      <Content mode="favorites" scrollTop={scrollTop} modeDesktop={modeDesktop} />
     </Panel>
   );
 };

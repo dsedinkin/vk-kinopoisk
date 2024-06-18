@@ -9,11 +9,13 @@ import { useGlobalValue } from "elum-state/react";
 import { SNACKBAR, POPOUT, DEFAULT_VIEW, DEFAULT_PANELS } from "engine/state";
 
 import {
+  useAdaptivityWithJSMediaQueries,
+  ViewWidth,
   ModalRoot,
   ModalPage,
   SplitLayout,
   SplitCol,
-  Root,
+  Epic,
   View,
 } from "@vkontakte/vkui";
 import {
@@ -25,12 +27,14 @@ import {
   Navigation,
   Search,
   Watch,
+  navigationMode,
 } from "structure";
 
 interface App extends React.HTMLAttributes<HTMLDivElement> {}
 
 const App: React.FC<App> = () => {
   const routeNavigator = useRouteNavigator();
+  const { viewWidth } = useAdaptivityWithJSMediaQueries();
   const { modal: activeModal, view: activeView = DEFAULT_VIEW.auth } =
     useActiveVkuiLocation();
 
@@ -48,13 +52,14 @@ const App: React.FC<App> = () => {
     </ModalRoot>
   );
 
-  const isPrivateView = ["view-auth", "view-error", "view-watch"]?.includes(
-    activeView
-  );
+  const isPrivateView = ["view-auth", "view-error"]?.includes(activeView);
 
   const modeSplitColMiddle = ["view-watch"]?.includes(activeView);
+  const modeDesktop = viewWidth >= ViewWidth.SMALL_TABLET;
 
-  const header = (!isPrivateView || modeSplitColMiddle) && <Header />;
+  const header = (!isPrivateView || modeSplitColMiddle) && modeDesktop && (
+    <Header />
+  );
 
   const contentRef = useRef<React.Ref<HTMLDivElement>>();
 
@@ -69,29 +74,38 @@ const App: React.FC<App> = () => {
       style={{ justifyContent: "center" }}
     >
       {header}
-      {!isPrivateView && (
+      {!isPrivateView && !modeSplitColMiddle && modeDesktop && (
         <SplitCol
-          className={isPrivateView ? "" : "SplitCol--first"}
+          className={
+            isPrivateView || modeSplitColMiddle ? "" : "SplitCol--first"
+          }
           width="100%"
           maxWidth={300}
           animate={false}
         >
-          <Navigation />
+          <Navigation mode={navigationMode.DESKTOP} />
         </SplitCol>
       )}
       <SplitCol
         className={
-          modeSplitColMiddle
-            ? "SplitCol--middle"
-            : isPrivateView
+          isPrivateView || !modeDesktop
             ? ""
+            : modeSplitColMiddle
+            ? "SplitCol--middle"
             : "SplitCol--second"
         }
         animate={false}
         maxWidth={modeSplitColMiddle ? 1232 : 930}
         getRootRef={contentRef as any}
       >
-        <Root activeView={activeView}>
+        <Epic
+          activeStory={activeView}
+          tabbar={
+            !isPrivateView &&
+            !modeSplitColMiddle &&
+            !modeDesktop && <Navigation mode={navigationMode.MOBILE} />
+          }
+        >
           <View
             nav={DEFAULT_VIEW.auth}
             activePanel={DEFAULT_PANELS.auth.DEFAULT_PANEL}
@@ -104,6 +118,7 @@ const App: React.FC<App> = () => {
           >
             <Search
               nav={DEFAULT_PANELS.search.DEFAULT_PANEL}
+              modeDesktop={modeDesktop}
               scrollTop={scrollTop}
             />
           </View>
@@ -113,6 +128,7 @@ const App: React.FC<App> = () => {
           >
             <Favorite
               nav={DEFAULT_PANELS.favorite.DEFAULT_PANEL}
+              modeDesktop={modeDesktop}
               scrollTop={scrollTop}
             />
           </View>
@@ -120,7 +136,10 @@ const App: React.FC<App> = () => {
             nav={DEFAULT_VIEW.watch}
             activePanel={DEFAULT_PANELS.watch.DEFAULT_PANEL}
           >
-            <Watch nav={DEFAULT_PANELS.watch.DEFAULT_PANEL} />
+            <Watch
+              nav={DEFAULT_PANELS.watch.DEFAULT_PANEL}
+              modeDesktop={modeDesktop}
+            />
           </View>
           <View
             nav={DEFAULT_VIEW.error}
@@ -128,7 +147,7 @@ const App: React.FC<App> = () => {
           >
             <Error nav={DEFAULT_PANELS.error.DEFAULT_PANEL} />
           </View>
-        </Root>
+        </Epic>
       </SplitCol>
       {snackbar}
     </SplitLayout>

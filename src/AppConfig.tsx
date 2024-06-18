@@ -30,9 +30,9 @@ interface IAppConfig extends React.HTMLAttributes<HTMLDivElement> {}
 
 const AppConfig: React.FC<IAppConfig> = () => {
   const platform = usePlatform();
-  const vkBridgeAppearance = useAppearance() || undefined;
-  const vkBridgeInsets = useInsets() || undefined;
-  const vkBridgeAdaptivityProps = transformVKBridgeAdaptivity(useAdaptivity());
+  // const vkBridgeAppearance = useAppearance() || undefined;
+  // const vkBridgeInsets = useInsets() || undefined;
+  // const vkBridgeAdaptivityProps = transformVKBridgeAdaptivity(useAdaptivity());
 
   const routes = RoutesConfig.create([
     createRoot("default_root", [
@@ -56,16 +56,18 @@ const AppConfig: React.FC<IAppConfig> = () => {
 
   const router = createHashRouter(routes.getRoutes());
 
+  // <AdaptivityProvider {...vkBridgeAdaptivityProps}>
+  // <AppRoot mode="full" safeAreaInsets={vkBridgeInsets}>
   return (
     <ConfigProvider
       // appearance="light"
-      appearance={vkBridgeAppearance}
+      // appearance={vkBridgeAppearance}
       platform={platform}
       isWebView={vkBridge.isWebView()}
       hasCustomPanelHeaderAfter={false}
     >
-      <AdaptivityProvider {...vkBridgeAdaptivityProps}>
-        <AppRoot mode="full" safeAreaInsets={vkBridgeInsets}>
+      <AdaptivityProvider>
+        <AppRoot mode="full">
           <RouterProvider router={router} notFoundRedirectPath="/error/404/">
             <ErrorBoundary>
               <App />

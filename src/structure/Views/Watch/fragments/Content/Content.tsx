@@ -13,9 +13,14 @@ import {
   Button,
   ButtonGroup,
   Div,
+  FixedLayout,
+  Gradient,
   Header,
   Headline,
   MiniInfoCell,
+  Placeholder,
+  Separator,
+  Spacing,
   Subhead,
   Text,
 } from "@vkontakte/vkui";
@@ -30,9 +35,15 @@ import {
 
 import "./Content.css";
 
-interface IContentProps extends React.HTMLAttributes<HTMLDivElement> {}
+interface IContentProps extends React.HTMLAttributes<HTMLDivElement> {
+  modeDesktop?: boolean;
+}
 
-const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
+const Content: React.FC<IContentProps> = ({
+  modeDesktop,
+  className,
+  ...restProps
+}) => {
   const routeNavigator = useRouteNavigator();
 
   const params = useParams<"id">();
@@ -74,6 +85,7 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
           appearance="negative"
           mode="primary"
           size="l"
+          stretched={!modeDesktop}
           onClick={() => {
             setFavorites(id);
           }}
@@ -84,6 +96,7 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
         <Button
           mode="primary"
           size="l"
+          stretched={!modeDesktop}
           onClick={() => {
             setFavorites(id);
           }}
@@ -98,103 +111,135 @@ const Content: React.FC<IContentProps> = ({ className, ...restProps }) => {
     handleRefresh();
   }, []);
 
+  const Buttons = ({}) => (
+    <Div>
+      <ButtonGroup mode={modeDesktop ? "horizontal" : "vertical"} stretched>
+        {buttons}
+        <Button
+          mode="secondary"
+          size="l"
+          stretched={!modeDesktop}
+          onClick={() => {
+            copyText(`${window.location.origin}/#/watch/${id}`);
+          }}
+        >
+          Скопировать ссылку
+        </Button>
+      </ButtonGroup>
+    </Div>
+  );
+
+  const WatchHeaderAfter = ({}) => (
+    <div className="WatchHeader__after">
+      {response?.name || response?.id ? (
+        <Subhead
+          Component="span"
+          className="CustomCell__subhead CustomCell__text"
+        >
+          {response?.name || response?.id}
+        </Subhead>
+      ) : (
+        <></>
+      )}
+      {response?.alternativeName ? (
+        <Headline Component="span" className="CustomCell__headline" weight="3">
+          {response?.alternativeName}
+        </Headline>
+      ) : (
+        <></>
+      )}
+      {response?.shortDescription ? (
+        <MiniInfoCell before={<Icon20ArticleOutline />} textWrap="full">
+          {response?.shortDescription}
+        </MiniInfoCell>
+      ) : (
+        <></>
+      )}
+      {response?.genresString ? (
+        <MiniInfoCell before={<Icon20ListBulletOutline />} textWrap="full">
+          {response?.genresString}
+        </MiniInfoCell>
+      ) : (
+        <></>
+      )}
+      {response?.year ? (
+        <MiniInfoCell before={<Icon20CalendarOutline />} textWrap="full">
+          {response?.year}
+        </MiniInfoCell>
+      ) : (
+        <></>
+      )}
+      {response?.movieLength ? (
+        <MiniInfoCell before={<Icon20RecentOutline />} textWrap="full">
+          {response?.movieLength + " мин."}
+        </MiniInfoCell>
+      ) : (
+        <></>
+      )}
+      {modeDesktop ? <Buttons /> : <></>}
+    </div>
+  );
+
+  const Description = ({}) => (
+    <>
+      {response?.description ? (
+        <Div>
+          <Header mode="secondary" style={{ padding: 0 }}>
+            Описание
+          </Header>
+          <Text>{response?.description}</Text>
+        </Div>
+      ) : (
+        <></>
+      )}
+    </>
+  );
+
   return (
     <div {...restProps} className={classNames("Content Group", className)}>
       <ContentLoading loading={loading} error={error} onRefresh={handleRefresh}>
-        <div className="Group__content">
-          <div className="WatchHeader">
-            <div className="WatchHeader__before">
-              <Poster
-                favorite={isFavorites(response?.id)}
-                rating={response?.rating}
-                src={response?.src}
-              />
+        {modeDesktop ? (
+          <div className="Group__content">
+            <div className="WatchHeader">
+              <div className="WatchHeader__before">
+                <Poster
+                  favorite={isFavorites(response?.id)}
+                  rating={response?.rating}
+                  src={response?.src}
+                  size="l"
+                />
+              </div>
+              <WatchHeaderAfter />
             </div>
-            <div className="WatchHeader__after">
-              {response?.name || response?.id ? (
-                <Subhead
-                  Component="span"
-                  className="CustomCell__subhead CustomCell__text"
-                >
-                  {response?.name || response?.id}
-                </Subhead>
-              ) : (
-                <></>
-              )}
-              {response?.alternativeName ? (
-                <Headline
-                  Component="span"
-                  className="CustomCell__headline"
-                  weight="3"
-                >
-                  {response?.alternativeName}
-                </Headline>
-              ) : (
-                <></>
-              )}
-              {response?.shortDescription ? (
-                <MiniInfoCell before={<Icon20ArticleOutline />} textWrap="full">
-                  {response?.shortDescription}
-                </MiniInfoCell>
-              ) : (
-                <></>
-              )}
-              {response?.genresString ? (
-                <MiniInfoCell
-                  before={<Icon20ListBulletOutline />}
-                  textWrap="full"
-                >
-                  {response?.genresString}
-                </MiniInfoCell>
-              ) : (
-                <></>
-              )}
-              {response?.year ? (
-                <MiniInfoCell
-                  before={<Icon20CalendarOutline />}
-                  textWrap="full"
-                >
-                  {response?.year}
-                </MiniInfoCell>
-              ) : (
-                <></>
-              )}
-              {response?.movieLength ? (
-                <MiniInfoCell before={<Icon20RecentOutline />} textWrap="full">
-                  {response?.movieLength + " мин."}
-                </MiniInfoCell>
-              ) : (
-                <></>
-              )}
-              <Div>
-                <ButtonGroup mode="horizontal" stretched>
-                  {buttons}
-                  <Button
-                    mode="secondary"
-                    size="l"
-                    onClick={() => {
-                      copyText(
-                        `${window.location.origin}/#/watch/${id}`
-                      );
-                    }}
-                  >
-                    Скопировать ссылку
-                  </Button>
-                </ButtonGroup>
-              </Div>
-            </div>
+            <Description />
           </div>
-          {response?.description ? (
-            <Div>
-              <Header mode="secondary" style={{ padding: 0 }}>
-                Описание
-              </Header>
-              <Text>{response?.description}</Text>
-            </Div>
-          ) : (
-            <></>
-          )}
-        </div>
+        ) : (
+          <>
+            <Gradient to="top" mode="tint">
+              <Placeholder>
+                <Poster
+                  favorite={isFavorites(response?.id)}
+                  rating={response?.rating}
+                  src={response?.src}
+                  size="l"
+                />
+              </Placeholder>
+            </Gradient>
+            <WatchHeaderAfter />
+            <Description />
+          </>
+        )}
+        {!modeDesktop ? (
+          <>
+            <Spacing size={124} />
+            <FixedLayout vertical="bottom" filled>
+              <Separator wide />
+              <Buttons />
+            </FixedLayout>
+          </>
+        ) : (
+          <></>
+        )}
       </ContentLoading>
     </div>
   );

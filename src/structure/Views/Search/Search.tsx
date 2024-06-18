@@ -12,11 +12,13 @@ import "./Search.css";
 
 interface ISearchProps extends React.HTMLAttributes<HTMLDivElement> {
   nav: string;
+  modeDesktop: boolean;
   scrollTop: () => void;
 }
 
 const Search: React.FC<ISearchProps> = ({
   nav,
+  modeDesktop,
   scrollTop,
   className,
   ...restProps
@@ -32,8 +34,12 @@ const Search: React.FC<ISearchProps> = ({
       id={nav}
       nav={nav}
     >
-      <Header children="Поиск" onClick={handleBackPage} />
-      <Content mode="search" scrollTop={scrollTop} />
+      <Header
+        children="Поиск"
+        onClick={handleBackPage}
+        modeDesktop={modeDesktop}
+      />
+      <Content mode="search" scrollTop={scrollTop} modeDesktop={modeDesktop} />
     </Panel>
   );
 };

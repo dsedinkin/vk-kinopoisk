@@ -6,6 +6,6 @@
   inset-block-start: 6px;
   inset-inline-start: 6px;
   padding: 4px 6px;
-  color: var(--vkui--color_text_contrast);
+  color: var(--vkui--color_text_contrast_themed);
   background: var(--vkui--color_icon_accent);
 }

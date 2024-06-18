@@ -46,11 +46,13 @@ import "./SearchContent.css";
 
 interface ISearchContentProps extends React.HTMLAttributes<HTMLDivElement> {
   mode?: "search" | "favorites";
+  modeDesktop?: boolean;
   scrollTop: () => void;
 }
 
 const SearchContent: React.FC<ISearchContentProps> = ({
   mode = "search",
+  modeDesktop,
   scrollTop,
   className,
   ...restProps
@@ -264,7 +266,11 @@ const SearchContent: React.FC<ISearchContentProps> = ({
   return (
     <div {...restProps} className={classNames("Content Group", className)}>
       {mode === "favorites" && favorites?.length === 0 ? (
-        <div className="Group__content">
+        <div
+          className={`Group__content${
+            !modeDesktop ? " Group__content--mobile" : ""
+          }`}
+        >
           <Placeholder
             header="Пока не добавлено"
             icon={
@@ -279,7 +285,11 @@ const SearchContent: React.FC<ISearchContentProps> = ({
           error={error}
           onRefresh={handleRefresh}
         >
-          <div className="Group__content">
+          <div
+            className={`Group__content${
+              !modeDesktop ? " Group__content--mobile" : ""
+            }`}
+          >
             <Div style={{ paddingTop: 0 }}>
               <Button
                 appearance="neutral"
@@ -294,6 +304,7 @@ const SearchContent: React.FC<ISearchContentProps> = ({
             {list}
           </div>
           <CustomFixedLayout
+            modeDesktop={modeDesktop}
             style={{ display: "flex", justifyContent: "center" }}
           >
             <Pagination
